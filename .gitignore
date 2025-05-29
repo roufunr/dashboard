@@ -15,3 +15,5 @@ mvnw
 mvnw.cmd
 *.class
 HELP.md
+application.yml
+application.properties
