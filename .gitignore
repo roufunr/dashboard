@@ -10,3 +10,8 @@
 
 # Log files
 *.log
+
+mvnw
+mvnw.cmd
+*.class
+
