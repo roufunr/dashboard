@@ -1,0 +1,12 @@
+# Ignore build output
+/target/
+
+# IntelliJ project files
+.idea/
+*.iml
+
+# OS-specific
+.DS_Store
+
+# Log files
+*.log
