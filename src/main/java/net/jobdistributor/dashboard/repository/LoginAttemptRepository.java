@@ -2,8 +2,11 @@ package net.jobdistributor.dashboard.repository;
 
 import net.jobdistributor.dashboard.entity.LoginAttempt;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,4 +21,12 @@ public interface LoginAttemptRepository extends JpaRepository<LoginAttempt, Long
 
     @Query("SELECT la FROM LoginAttempt la WHERE la.ipAddress = :ipAddress AND la.createdAt >= :since")
     List<LoginAttempt> findByIpAddressAndCreatedAtAfter(String ipAddress, LocalDateTime since);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM LoginAttempt la WHERE la.userId = :userId")
+    void deleteByUserId(Long userId);
+
+    @Query("SELECT COUNT(la) FROM LoginAttempt la WHERE la.userId = :userId")
+    long countByUserId(Long userId);
 }
