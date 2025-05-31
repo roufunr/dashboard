@@ -33,6 +33,9 @@ public class UserDeletionService {
     @Autowired
     private LoginAttemptRepository loginAttemptRepository;
 
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
+
     // ========================================
     // HARD DELETE - Permanent Data Removal
     // ========================================
@@ -249,6 +252,7 @@ public class UserDeletionService {
         try {
             long count = loginAttemptRepository.countByUserId(userId);
             loginAttemptRepository.deleteByUserId(userId);
+            tokenBlacklistRepository.deleteByUserId(userId);
             return (int) count;
         } catch (Exception e) {
             logger.error("Failed to delete login attempts for user {}: {}", userId, e.getMessage());

@@ -1,3 +1,4 @@
+
 package net.jobdistributor.dashboard.security;
 
 import jakarta.servlet.FilterChain;
@@ -25,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
 
+    // REMOVED: LogoutService dependency - no longer needed
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -40,7 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // Validate token
+            // UPDATED: Single validation method that handles everything:
+            // - JWT signature and expiration
+            // - Token blacklist checking (individual logout)
+            // - Token generation checking (logout-all)
             if (jwtService.validateToken(token)) {
                 Long userId = jwtService.getUserIdFromToken(token);
                 String email = jwtService.getEmailFromToken(token);
@@ -60,7 +66,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                     logger.debug("JWT authentication successful for user: {}", userId);
+                } else {
+                    logger.debug("JWT token missing user data");
                 }
+            } else {
+                // UPDATED: More specific logging about why token failed
+                logger.debug("JWT token validation failed - token may be expired, blacklisted, or invalidated by logout-all");
             }
         } catch (Exception e) {
             logger.error("JWT authentication failed", e);
@@ -68,5 +79,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        // ADDED: Skip filter for public endpoints to improve performance
+        String path = request.getRequestURI();
+
+        // Skip JWT filter for public authentication endpoints
+        return path.equals("/api/auth/login") ||
+                path.equals("/api/auth/register") ||
+                path.equals("/api/auth/forgot-password") ||
+                path.equals("/api/auth/reset-password") ||
+                path.startsWith("/api/public/") ||
+                path.startsWith("/public/") ||
+                path.equals("/health") ||
+                path.equals("/actuator/health");
     }
 }

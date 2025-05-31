@@ -30,6 +30,10 @@ public class User {
     @Column(columnDefinition = "ENUM('PENDING_VERIFICATION', 'ACTIVE', 'SUSPENDED', 'INACTIVE')")
     private UserStatus status = UserStatus.PENDING_VERIFICATION;
 
+    // ADD THIS FIELD FOR TOKEN GENERATION
+    @Column(name = "token_generation", nullable = false)
+    private Long tokenGeneration = 1L;
+
     @Column(name = "email_verified_at")
     private LocalDateTime emailVerifiedAt;
 
@@ -60,7 +64,7 @@ public class User {
     // Constructors
     public User() {}
 
-    // Getters and Setters
+    // Existing getters/setters...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -81,6 +85,10 @@ public class User {
 
     public UserStatus getStatus() { return status; }
     public void setStatus(UserStatus status) { this.status = status; }
+
+    // ADD GETTER/SETTER FOR TOKEN GENERATION
+    public Long getTokenGeneration() { return tokenGeneration; }
+    public void setTokenGeneration(Long tokenGeneration) { this.tokenGeneration = tokenGeneration; }
 
     public LocalDateTime getEmailVerifiedAt() { return emailVerifiedAt; }
     public void setEmailVerifiedAt(LocalDateTime emailVerifiedAt) { this.emailVerifiedAt = emailVerifiedAt; }
@@ -109,4 +117,3 @@ public class User {
     public List<Password> getPasswords() { return passwords; }
     public void setPasswords(List<Password> passwords) { this.passwords = passwords; }
 }
-

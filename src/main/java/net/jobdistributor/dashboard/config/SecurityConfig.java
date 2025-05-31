@@ -35,8 +35,7 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/verify-email",
                                 "/api/auth/forgot-password",
-                                "/api/auth/reset-password",
-                                "api/test/*"
+                                "/api/auth/reset-password"
                         ).permitAll()
 
                         // Health check and docs (optional)
