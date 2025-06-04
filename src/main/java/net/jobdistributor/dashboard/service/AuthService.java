@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @Transactional
 public class AuthService {
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -158,12 +158,12 @@ public class AuthService {
             attempt.setUserId(user.getId());
 
             // Check account status
-            if (user.getStatus() != UserStatus.ACTIVE) {
-                attempt.setSuccess(false);
-                attempt.setFailureReason("Account not active");
-                loginAttemptRepository.save(attempt);
-                return new LoginResult(false, "Account not verified or suspended", null);
-            }
+//            if (user.getStatus() != UserStatus.ACTIVE) {
+//                attempt.setSuccess(false);
+//                attempt.setFailureReason("Account not active");
+//                loginAttemptRepository.save(attempt);
+//                return new LoginResult(false, "Account not verified or suspended", null);
+//            }
 
             // Check if account is locked
             if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
@@ -248,7 +248,17 @@ public class AuthService {
 
         passwordResetRepository.save(reset);
 
-        // TODO: Send email with reset link
+//        Optional<Email> userEmailOpt = emailRepository.findByEmailAddress(email);
+//        if (userEmailOpt.isEmpty()) {
+//            logger.error("Email Address doesn't exist in systems: {}", email);
+//            return false;
+//        }
+        try {
+            emailService.sendPasswordResetEmail(email, reset.getResetToken());
+        } catch (Exception e) {
+            // Log error but don't fail signup
+            logger.error("Failed to send Password Reset email to: {}", email, e);
+        }
 
         return true;
     }
