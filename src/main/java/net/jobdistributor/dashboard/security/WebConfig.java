@@ -1,4 +1,4 @@
-package net.jobdistributor.dashboard.security; // Replace with your actual package name
+package net.jobdistributor.dashboard.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
