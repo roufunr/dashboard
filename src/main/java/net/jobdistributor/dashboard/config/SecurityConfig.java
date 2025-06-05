@@ -37,13 +37,10 @@ public class SecurityConfig {
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password"
                         ).permitAll()
-
                         // Health check and docs (optional)
                         .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
                         // Development endpoints (remove in production)
                         .requestMatchers("/h2-console/**").permitAll()
-
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
@@ -51,32 +48,35 @@ public class SecurityConfig {
 
         // For H2 console (development only)
         http.headers(headers -> headers.frameOptions().disable());
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // Allow specific origins (adjust for your frontend)
-        configuration.setAllowedOriginPatterns(Arrays.asList(
+        
+        // FIXED: Use explicit origins instead of patterns with credentials
+        configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://localhost:3001",
+                "http://localhost:3001", 
+                "http://localhost:5173",
+                "http://abdur-rouf.com:3000",
+                "https://abdur-rouf.com",
                 "https://dashboard.jobdistributor.net"
         ));
-
+        
         // Allow specific methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
+        
         // Allow specific headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
-
+        
         // Allow credentials
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 }
