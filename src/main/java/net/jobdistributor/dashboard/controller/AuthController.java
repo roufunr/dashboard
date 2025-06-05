@@ -105,6 +105,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         boolean success = authService.resetPassword(request.getToken(), request.getNewPassword());
 
+
         return ResponseEntity.ok(new ApiResponse(
                 success,
                 success ? "Password reset successfully" : "Invalid or expired token"

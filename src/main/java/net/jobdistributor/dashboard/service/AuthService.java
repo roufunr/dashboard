@@ -36,6 +36,9 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LogoutService logoutService;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // ========================================
@@ -289,6 +292,9 @@ public class AuthService {
         // Mark reset token as used
         reset.setUsedAt(LocalDateTime.now());
         passwordResetRepository.save(reset);
+
+
+        logoutService.logoutAllDevices(reset.getUserId());
 
         return true;
     }

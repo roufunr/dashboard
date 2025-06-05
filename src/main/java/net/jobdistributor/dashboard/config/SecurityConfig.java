@@ -51,7 +51,6 @@ public class SecurityConfig {
 
         // For H2 console (development only)
         http.headers(headers -> headers.frameOptions().disable());
-
         return http.build();
     }
 
